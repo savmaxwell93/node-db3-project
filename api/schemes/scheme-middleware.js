@@ -58,8 +58,8 @@ const validateScheme = async (req, res, next) => {
 const validateStep = (req, res, next) => {
   const { instructions, step_number } = req.body
   if(!instructions ||
-    instructions === '' ||
     instructions !== String ||
+    !instructions.trim() ||
     step_number !== Number ||
     step_number < 1
   ) {
