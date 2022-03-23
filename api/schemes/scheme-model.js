@@ -182,7 +182,28 @@ async function addStep(scheme_id, step) {
     1E- This function adds a step to the scheme with the given `scheme_id`
     and resolves to _all the steps_ belonging to the given `scheme_id`,
     including the newly created one.
+    SELECT
+      st.step_number,
+      st.step_id,
+      instructions,
+      scheme_name
+    FROM schemes as sc
+    LEFT JOIN steps as st
+      ON sc.scheme_id = st.scheme_id
+    WHERE sc.scheme_id = 1
+    ORDER BY st.step_number ASC;
   */
+  return db('steps').insert({
+    ...step,
+    scheme_id
+  })
+    .then(() => {
+      return db('steps as st')
+        .leftJoin('schemes as sc', 'sc.scheme_id', 'st.scheme_id')
+        .select('step_number', 'step_id', 'instructions', 'scheme_name')
+        .where('sc.scheme_id', scheme_id)
+        .orderBy('st.step_number')
+    })
 }
 
 module.exports = {
